@@ -1,4 +1,8 @@
 FROM debian:10.3
+
+LABEL maintainer="contact@juan.email"
+ARG DEBIAN_FRONTEND=noninteractive
+
 # start from debian 10.3 and get efault gcc 8.3
 RUN echo "deb http://ftp.fr.debian.org/debian/ buster main non-free contrib" > /etc/apt/sources.list
 RUN echo "deb-src http://ftp.fr.debian.org/debian/ buster main non-free contrib" >> /etc/apt/sources.list
@@ -6,7 +10,7 @@ RUN echo "deb http://security.debian.org/debian-security buster/updates main con
 RUN echo "deb-src http://security.debian.org/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list
 RUN echo "deb http://ftp.fr.debian.org/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list
 RUN echo "deb-src http://ftp.fr.debian.org/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list
-RUN apt update && apt-get install -y --no-install-recommends apt apt-utils
+RUN apt update -q
 
 RUN apt-get install -y --no-install-recommends build-essential gcc g++ pkg-config make automake autoconf
 RUN apt-get install -y --no-install-recommends gcc-8 g++-8 pkg-config make automake autoconf
@@ -38,5 +42,11 @@ WORKDIR /mxe
 # checkout to the last known working/tested (for me...) commit on date of this Dockerfile i.e:
 RUN git checkout 76375b2bccbbf409aaab44d4fc0cbd017c5a00e3
 
-# compile the wanted toolchain ...
-RUN make MXE_TARGETS="i686-w64-mingw32.static" qt5
+# compile the wanted toolchain without CCACHE for space ...
+RUN make MXE_USE_CCACHE= DONT_CHECK_REQUIREMENTS=1 MXE_TARGETS="i686-w64-mingw32.static" qt5
+RUN apt-get clean
+RUN apt-get autoremove
+RUN rm -rf /var/lib/apt/lists/*
+RUN rm -rf /mxe/.log
+RUN rm -rf /mxe/pkg
+RUN rm -rf /tmp/*

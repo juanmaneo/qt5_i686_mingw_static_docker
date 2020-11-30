@@ -15,7 +15,7 @@ RUN apt-get install -y --no-install-recommends cmake libgtest-dev swig astyle zi
 RUN apt-get install -y --no-install-recommends autopoint bison flex gperf libtool ruby scons p7zip-full
 RUN apt-get install -y --no-install-recommends intltool libtool libtool-bin nsis zip lzip gnupg libharfbuzz-dev libgdk-pixbuf2.0-dev
 RUN apt-get install -y --no-install-recommends python-dev
-RUN apt-get install -y default-jre-headless default-jdk-headless  
+RUN apt-get install -y default-jre default-jdk
 
 RUN cat /etc/debian_version
 RUN gcc --version && g++ --version && ld --version
